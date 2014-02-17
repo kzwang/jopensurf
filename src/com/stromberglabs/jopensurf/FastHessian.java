@@ -61,7 +61,7 @@ public class FastHessian implements Serializable {
 	
 	public FastHessian(IntegralImage integralImage,
 						int octaves, int initSample, float threshold,
-						float balanceValue){
+						float balanceValue) {
 		mIntegralImage = integralImage;
 		mOctaves = octaves;
 		mInitSample = initSample;
@@ -73,26 +73,26 @@ public class FastHessian implements Serializable {
 		mHeight = integralImage.getHeight();
 	}
 	
-	public List<SURFInterestPoint> getIPoints(){
-		if ( mInterestPoints == null || mRecalculateInterestPoints ) {
+	public List<SURFInterestPoint> getIPoints() {
+		if (mInterestPoints == null || mRecalculateInterestPoints) {
 			mInterestPoints = new LinkedList<SURFInterestPoint>();
 			buildResponseMap();
 			
 			ResponseLayer b,m,t;
-			for ( int o = 0; o < mOctaves; o++ ){
-				for ( int i = 0; i <= 1; i++ ){
+			for (int o = 0; o < mOctaves; o++) {
+				for (int i = 0; i <= 1; i++) {
 				    b = mLayers.get(filter_map[o][i]);
 				    m = mLayers.get(filter_map[o][i+1]);
 				    t = mLayers.get(filter_map[o][i+2]);
 				    
 				    // loop over middle response layer at density of the most
 				    // sparse layer (always top), to find maxima across scale and space
-				    for ( int r = 0; r < t.getHeight(); r++ ){
-				    	for ( int c = 0; c < t.getWidth(); c++ ){
-				    		if ( isExtremum(r,c,t,m,b) ){
+				    for (int r = 0; r < t.getHeight(); r++) {
+				    	for (int c = 0; c < t.getWidth(); c++) {
+				    		if (isExtremum(r,c,t,m,b)) {
 				    			//System.out.println("r = " + r + ", c = " + c);
 				    			SURFInterestPoint point = interpolateExtremum(r, c, t, m, b);
-				    			if ( point != null ){
+				    			if (point != null) {
 				    				mInterestPoints.add(point);
 				    			}
 				    		}
@@ -104,57 +104,57 @@ public class FastHessian implements Serializable {
 		return mInterestPoints;
 	}
 	
-	private void buildResponseMap(){
+	private void buildResponseMap() {
 		mLayers = new LinkedList<ResponseLayer>();
 		
 		int w = mWidth / mInitSample;
 		int h = mHeight / mInitSample;
 		int s = mInitSample;
 		//System.out.println("w = " + w + ", h = " + h + ", s = " + s);
-		if ( mOctaves >= 1 ){
+		if (mOctaves >= 1) {
 			mLayers.add(new ResponseLayer(w, h, s, 9, mIntegralImage));
 			mLayers.add(new ResponseLayer(w, h, s, 15, mIntegralImage));
 			mLayers.add(new ResponseLayer(w, h, s, 21, mIntegralImage));
 			mLayers.add(new ResponseLayer(w, h, s, 27, mIntegralImage));
 		}
 		
-		if ( mOctaves >= 2 ){
+		if (mOctaves >= 2) {
 			mLayers.add(new ResponseLayer(w/2, h/2, s*2, 39, mIntegralImage));
 			mLayers.add(new ResponseLayer(w/2, h/2, s*2, 51, mIntegralImage));
 		}
 
-		if ( mOctaves >= 3 ){
+		if (mOctaves >= 3) {
 			mLayers.add(new ResponseLayer(w/4, h/4, s*4, 75, mIntegralImage));
 			mLayers.add(new ResponseLayer(w/4, h/4, s*4, 99, mIntegralImage));
 
 		}
 		
-		if ( mOctaves >= 4 ){
+		if (mOctaves >= 4) {
 			mLayers.add(new ResponseLayer(w/8, h/8, s*8, 147, mIntegralImage));
 			mLayers.add(new ResponseLayer(w/8, h/8, s*8, 195, mIntegralImage));
 		}
 		
-		if ( mOctaves >= 5 ){
+		if (mOctaves >= 5) {
 			mLayers.add(new ResponseLayer(w/16, h/16, s*16, 291, mIntegralImage));
 			mLayers.add(new ResponseLayer(w/16, h/16, s*16, 387, mIntegralImage));
 		}
 	}
 	
-	private boolean isExtremum(int r, int c, ResponseLayer t, ResponseLayer m, ResponseLayer b){
+	private boolean isExtremum(int r, int c, ResponseLayer t, ResponseLayer m, ResponseLayer b) {
 		int layerBorder = (t.getFilter() + 1)/(2 * t.getStep());
 		
-		if ( r <= layerBorder || r >= t.getHeight() - layerBorder || c <= layerBorder || c >= t.getWidth() - layerBorder )
+		if (r <= layerBorder || r >= t.getHeight() - layerBorder || c <= layerBorder || c >= t.getWidth() - layerBorder)
 			return false;
 		
 		double candidate = m.getResponse(r,c,t);
 
-		if ( candidate < mThreshold )
+		if (candidate < mThreshold)
 			return false;
 		
 		//System.out.println("r = " + r + ", c = " + c);
 		//See if the response in 3x3x3 is greater, then it isn't a local maxima
-		for ( int rr = -1; rr <= 1; rr++ ){
-			for ( int cc = -1; cc <= 1; cc++ ){
+		for (int rr = -1; rr <= 1; rr++) {
+			for (int cc = -1; cc <= 1; cc++) {
 				if (t.getResponse(r+rr,c+cc) >= candidate ||
 						((rr != 0 || cc != 0) && m.getResponse(r+rr, c+cc, t) >= candidate) ||
 						b.getResponse(r+rr, c+cc, t) >= candidate)
@@ -164,7 +164,7 @@ public class FastHessian implements Serializable {
 		return true;
 	}
 	
-	private SURFInterestPoint interpolateExtremum(int r, int c, ResponseLayer t, ResponseLayer m, ResponseLayer b){
+	private SURFInterestPoint interpolateExtremum(int r, int c, ResponseLayer t, ResponseLayer m, ResponseLayer b) {
 		//should check to make sure that m's filter value is less than t's and greater than b's
 		int filterStep = m.getFilter() - b.getFilter();
 		
@@ -174,7 +174,7 @@ public class FastHessian implements Serializable {
 		xr = values[1];
 		xc = values[2];
 		
-		if ( Math.abs(xi) < 0.5f && Math.abs(xr) < 0.5f && Math.abs(xc) < 0.5f ){
+		if (Math.abs(xi) < 0.5f && Math.abs(xr) < 0.5f && Math.abs(xc) < 0.5f) {
 			//WE"VE GOT AN INTEREST POINT HERE
 			float x = (float)(c+xc)*t.getStep();
 			float y = (float)(r+xr)*t.getStep();
@@ -186,7 +186,7 @@ public class FastHessian implements Serializable {
 		return null;
 	}
 	
-	private double[] interpolateStep(int r, int c, ResponseLayer t, ResponseLayer m, ResponseLayer b){
+	private double[] interpolateStep(int r, int c, ResponseLayer t, ResponseLayer m, ResponseLayer b) {
 		double[] values = new double[3];
 		
 		RealMatrix partialDerivs = getPartialDerivativeMatrix(r,c,t,m,b);
@@ -196,8 +196,8 @@ public class FastHessian implements Serializable {
 		RealMatrix X = solver.getInverse().multiply(partialDerivs);
 		
 //		System.out.println("X = " + X.getColumnDimension() + " col x " + X.getRowDimension() + " rows");
-//		for ( int i = 0; i < X.getRowDimension(); i++ ){
-//			for ( int j = 0; j < X.getColumnDimension(); j++ ){
+//		for (int i = 0; i < X.getRowDimension(); i++) {
+//			for (int j = 0; j < X.getColumnDimension(); j++) {
 //				System.out.print(X.getEntry(i,j) + (j != X.getColumnDimension()-1 ? " - " : ""));
 //			}
 //			System.out.println();
@@ -215,13 +215,13 @@ public class FastHessian implements Serializable {
 		return values;
 	}
 	
-	private RealMatrix getPartialDerivativeMatrix(int r, int c, ResponseLayer t, ResponseLayer m, ResponseLayer b){
+	private RealMatrix getPartialDerivativeMatrix(int r, int c, ResponseLayer t, ResponseLayer m, ResponseLayer b) {
 		//deriv[0][0] = dx, deriv[1][0] = dy, deriv[2][0] = ds
 		double[][] derivs = new double[3][1];
 		
-		derivs[0][0] = ( m.getResponse(r,c+1,t) - m.getResponse(r,c-1,t)) / 2.0D;
-		derivs[1][0] = ( m.getResponse(r+1,c,t) - m.getResponse(r-1,c,t)) / 2.0D;
-		derivs[2][0] = ( t.getResponse(r,c) - b.getResponse(r,c,t)) / 2.0D;
+		derivs[0][0] = (m.getResponse(r,c+1,t) - m.getResponse(r,c-1,t)) / 2.0D;
+		derivs[1][0] = (m.getResponse(r+1,c,t) - m.getResponse(r-1,c,t)) / 2.0D;
+		derivs[2][0] = (t.getResponse(r,c) - b.getResponse(r,c,t)) / 2.0D;
 		
 		//System.out.format("dx = %.8f, dy = %.8f, ds = %.8f",derivs[0][0],derivs[1][0],derivs[2][0]);
 		//System.out.println();
@@ -231,7 +231,7 @@ public class FastHessian implements Serializable {
 		return matrix;
 	}
 
-	private RealMatrix getHessian3DMatrix(int r, int c, ResponseLayer t, ResponseLayer m, ResponseLayer b){
+	private RealMatrix getHessian3DMatrix(int r, int c, ResponseLayer t, ResponseLayer m, ResponseLayer b) {
 		//Layout:
 		//  [dxx][dxy][dxs]
 		//  [dxy][dyy][dys]
@@ -256,22 +256,22 @@ public class FastHessian implements Serializable {
 							2 * v;
 		
 		//dxy
-		hessian[0][1] = hessian[1][0] = ( m.getResponse(r + 1, c + 1, t) - 
+		hessian[0][1] = hessian[1][0] = (m.getResponse(r + 1, c + 1, t) - 
 											m.getResponse(r + 1, c - 1, t) -
 											m.getResponse(r - 1, c + 1, t) + 
-											m.getResponse(r - 1, c - 1, t) ) / 4.0;
+											m.getResponse(r - 1, c - 1, t)) / 4.0;
 		
 		//dxs
-		hessian[0][2] = hessian[2][0] = ( t.getResponse(r, c + 1) - 
+		hessian[0][2] = hessian[2][0] = (t.getResponse(r, c + 1) - 
 											t.getResponse(r, c - 1) -
 											b.getResponse(r, c + 1, t) + 
-											b.getResponse(r, c - 1, t) ) / 4.0;
+											b.getResponse(r, c - 1, t)) / 4.0;
 		
 		//dys
-		hessian[1][2] = hessian[2][1] = ( t.getResponse(r + 1, c) - 
+		hessian[1][2] = hessian[2][1] = (t.getResponse(r + 1, c) - 
 											t.getResponse(r - 1, c) -
 											b.getResponse(r + 1, c, t) + 
-											b.getResponse(r - 1, c, t) ) / 4.0;
+											b.getResponse(r - 1, c, t)) / 4.0;
 
 		return new Array2DRowRealMatrix(hessian);
 	}
