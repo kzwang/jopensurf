@@ -53,7 +53,7 @@ public class ResponseLayer implements Serializable {
 	}
 	
 	private void buildResponseLayer(IntegralImage img){
-		int b = (mFilter - 1) / 2 + 1;
+    int b = (mFilter - 1) / 2;
 		int l = mFilter / 3;
 		int w = mFilter;
 		double inverse_area = 1D/(w*w);
