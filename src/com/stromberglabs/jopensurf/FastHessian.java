@@ -148,17 +148,27 @@ public class FastHessian implements Serializable {
 		
 		double candidate = m.getResponse(r,c,t);
 
-		if (candidate < mThreshold)
+		if (Math.abs(candidate) < mThreshold)
 			return false;
 		
 		//System.out.println("r = " + r + ", c = " + c);
 		//See if the response in 3x3x3 is greater, then it isn't a local maxima
 		for (int rr = -1; rr <= 1; rr++) {
 			for (int cc = -1; cc <= 1; cc++) {
-				if (t.getResponse(r+rr,c+cc) >= candidate ||
-						((rr != 0 || cc != 0) && m.getResponse(r+rr, c+cc, t) >= candidate) ||
-						b.getResponse(r+rr, c+cc, t) >= candidate)
+        double tResponse = Math.abs(t.getResponse(r+rr,c+cc));
+        double mResponse = Math.abs(m.getResponse(r+rr, c+cc, t));
+        double bResponse = Math.abs(b.getResponse(r+rr, c+cc, t));
+				if (candidate > 0 &&
+            (tResponse >= candidate ||
+             bResponse >= candidate ||
+            (mResponse >= candidate && (rr != 0 || cc != 0)))) {
 					return false;
+        } else if(candidate < 0 &&
+            (tResponse <= candidate ||
+             bResponse <= candidate ||
+            (mResponse <= candidate && (rr != 0 || cc != 0)))) {
+          return false;'
+        }
 			}
 		}
 		return true;
