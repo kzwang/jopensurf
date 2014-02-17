@@ -82,8 +82,18 @@ public class SurfCompare extends JPanel {
     	mImageBWidth = (int)((float)imageB.getWidth() * mImageBXScale);
     	mImageBHeight = (int)((float)image.getHeight() * mImageBYScale);
     	
-    	mAMatchingPoints = mSurfA.getMatchingPoints(mSurfB,mUpright);
-    	mBMatchingPoints = mSurfB.getMatchingPoints(mSurfA,mUpright);
+    	mAMatchingPoints = mSurfA.getMatchingPoints(mSurfB, mUpright);
+    	mBMatchingPoints = mSurfB.getMatchingPoints(mSurfA, mUpright);
+
+      int numAPoints = mUpright ? mSurfA.getUprightInterestPoints().size() :
+          mSurfA.getFreeOrientedInterestPoints().size();
+      System.out.println("Image A has " + numAPoints + " with " + mAMatchingPoints.size()
+          + " which match B");
+
+      int numBPoints = mUpright ? mSurfB.getUprightInterestPoints().size() :
+          mSurfB.getFreeOrientedInterestPoints().size();
+      System.out.println("Image B has " + numBPoints + " with " + mBMatchingPoints.size()
+          + " which match A");
     }
 
     /**
