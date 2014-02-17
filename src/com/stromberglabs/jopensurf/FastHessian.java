@@ -275,14 +275,4 @@ public class FastHessian implements Serializable {
 
 		return new Array2DRowRealMatrix(hessian);
 	}
-	
-	public static void main(String[] args){
-		try {
-			IntegralImage integralImage = new IntegralImage(ImageIO.read(new File("C:\\workspace\\opensurf\\OpenSURF\\Images\\sf.jpg")));
-			FastHessian hessian = new FastHessian(integralImage,5,2,0.004F,0.81F);
-			hessian.getIPoints();
-		} catch (Exception e){
-			e.printStackTrace();
-		}
-	}
 }

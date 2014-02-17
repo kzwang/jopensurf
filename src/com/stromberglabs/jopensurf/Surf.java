@@ -84,7 +84,7 @@ public class Surf implements Serializable {
 		mThreshold = threshold;
 		
 		//Calculate the integral image
-		mIntegralImage = new IntegralImage(mOriginalImage);
+		mIntegralImage = new IntegralImage(new ImageWrapper(mOriginalImage));
 		
 		//Calculate the fast hessian
 		mHessian = new FastHessian(mIntegralImage,mNumOctaves,HESSIAN_INIT_SAMPLE,mThreshold,mBalanceValue);
@@ -133,14 +133,14 @@ public class Surf implements Serializable {
 	
 	//TODO: Why the multiply by 1?
 	private float haarX(int row, int column, int s){
-		return ImageTransformUtils.BoxIntegral(mIntegralImage, row-s/2, column, s, s/2)
-			-1 * ImageTransformUtils.BoxIntegral(mIntegralImage, row-s/2, column-s/2, s, s/2);
+		return mIntegralImage.getIntegralValue(row-s/2, column, s, s/2)
+			-1 * mIntegralImage.getIntegralValue(row-s/2, column-s/2, s, s/2);
 	}
 
 	//TODO: Why the multiply by 1?
 	private float haarY(int row, int column, int s){
-		return ImageTransformUtils.BoxIntegral(mIntegralImage, row, column-s/2, s/2, s)
-			-1 * ImageTransformUtils.BoxIntegral(mIntegralImage, row-s/2, column-s/2, s/2, s);
+		return mIntegralImage.getIntegralValue(row, column-s/2, s/2, s)
+			-1 * mIntegralImage.getIntegralValue(row-s/2, column-s/2, s/2, s);
 	}
 	
 	private void getOrientation(SURFInterestPoint input){

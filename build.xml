@@ -19,8 +19,8 @@
 
 	<target name="compile">
 		<mkdir dir="${class.dir}"/>
-		<javac srcdir="${src.dir}" destdir="${class.dir}" classpathref="classpath"/>
-		<javac srcdir="${test.dir}" destdir="${class.dir}" classpathref="classpath"/>
+		<javac srcdir="${src.dir}" destdir="${class.dir}" classpathref="classpath" includeantruntime="false"/>
+		<javac srcdir="${test.dir}" destdir="${class.dir}" classpathref="classpath" includeantruntime="false"/>
 	</target>
 
 	<target name="example" depends="compile">
@@ -39,7 +39,7 @@
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="classpath"/>
       <formatter type="plain"/>
-      <test name="com.stromberglabs.jopensurf.SurfTest"/>
+      <test name="com.stromberglabs.jopensurf.IntegralImageTest"/>
     </junit>
 	</target>
 

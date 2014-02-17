@@ -67,14 +67,14 @@ public class ResponseLayer implements Serializable {
 			      c = ac * mStep;
 			      
 			      // Compute response components
-			      Dxx = ImageTransformUtils.BoxIntegral(img, r - l + 1, c - b, 2*l - 1, w)
-			          - ImageTransformUtils.BoxIntegral(img, r - l + 1, c - l / 2, 2*l - 1, l)*3;
-			      Dyy = ImageTransformUtils.BoxIntegral(img, r - b, c - l + 1, w, 2*l - 1)
-			          - ImageTransformUtils.BoxIntegral(img, r - l / 2, c - l + 1, l, 2*l - 1)*3;
-			      Dxy = + ImageTransformUtils.BoxIntegral(img, r - l, c + 1, l, l)
-			            + ImageTransformUtils.BoxIntegral(img, r + 1, c - l, l, l)
-			            - ImageTransformUtils.BoxIntegral(img, r - l, c - l, l, l)
-			            - ImageTransformUtils.BoxIntegral(img, r + 1, c + 1, l, l);
+			      Dxx = img.getIntegralValue(r - l + 1, c - b, 2*l - 1, w)
+			          - img.getIntegralValue(r - l + 1, c - l / 2, 2*l - 1, l)*3;
+			      Dyy = img.getIntegralValue(r - b, c - l + 1, w, 2*l - 1)
+			          - img.getIntegralValue(r - l / 2, c - l + 1, l, 2*l - 1)*3;
+			      Dxy = + img.getIntegralValue(r - l, c + 1, l, l)
+			            + img.getIntegralValue(r + 1, c - l, l, l)
+			            - img.getIntegralValue(r - l, c - l, l, l)
+			            - img.getIntegralValue(r + 1, c + 1, l, l);
 			      
 			      //System.out.println("dxx: " + Dxx + ", dyy: " + Dyy + ", Dxy: " + Dxy);
 
