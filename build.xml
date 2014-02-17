@@ -14,7 +14,7 @@
 	</path>
 
 	<target name="clean">
-		<delete dir="${build.dir}"/>
+		<delete dir="${class.dir}"/>
 	</target>
 
 	<target name="compile">
@@ -30,7 +30,7 @@
 		</java>
 	</target>
 	
-	<target name="jar" depends="compile">
+	<target name="jar" depends="compile,test">
 		<mkdir dir="${dist.dir}"/>
 		<jar destfile="${dist.dir}/jopensurf.jar" basedir="${class.dir}"/>
 	</target>
