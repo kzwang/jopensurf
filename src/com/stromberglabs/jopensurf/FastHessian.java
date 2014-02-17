@@ -167,7 +167,7 @@ public class FastHessian implements Serializable {
             (tResponse <= candidate ||
              bResponse <= candidate ||
             (mResponse <= candidate && (rr != 0 || cc != 0)))) {
-          return false;'
+          return false;
         }
 			}
 		}
