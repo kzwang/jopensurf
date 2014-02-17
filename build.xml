@@ -1,4 +1,4 @@
-<project>
+<project basedir=".">
 	<property name="lib.dir" location="${basedir}/lib"/>
 	<property name="build.dir" location="${basedir}/build"/>
 	<property name="class.dir" location="${build.dir}/classes"/>
@@ -33,6 +33,14 @@
 	<target name="jar" depends="compile">
 		<mkdir dir="${dist.dir}"/>
 		<jar destfile="${dist.dir}/jopensurf.jar" basedir="${class.dir}"/>
+	</target>
+
+  <target name="test" depends="compile">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="classpath"/>
+      <formatter type="plain"/>
+      <test name="com.stromberglabs.jopensurf.SurfTest"/>
+    </junit>
 	</target>
 
 </project>
